@@ -57,6 +57,7 @@ class SerLCD : public Print
 
 public:
 	SerLCD();
+	SerLCD(bool noDelay);
 	~SerLCD();
 	void begin(TwoWire &wirePort);
 	void begin(TwoWire &wirePort, byte i2c_addr);
@@ -124,6 +125,7 @@ private:
 	byte _i2cAddr = DISPLAY_ADDRESS1;
 	byte _displayControl = LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF;
 	byte _displayMode = LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT;
+	bool _noDelay = false;
 	void init();
 	void beginTransmission();
 	void transmit(byte data);

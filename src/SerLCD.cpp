@@ -92,6 +92,12 @@ SerLCD::SerLCD()
 {
 }
 
+//<<constructor>> Setup with no delay option
+SerLCD::SerLCD(bool noDelay)
+{
+  _noDelay = noDelay;
+}
+
 //<<destructor>>
 SerLCD::~SerLCD()
 { /*nothing to destruct*/
@@ -193,7 +199,8 @@ void SerLCD::beginTransmission()
     } // if _spiSettings
 #endif
     digitalWrite(_csPin, LOW);
-    delay(10); // wait a bit for display to enable
+    if (!_noDelay)
+      delay(10); // wait a bit for display to enable
   } // if-else
 } // beginTransmission
 
@@ -237,7 +244,8 @@ void SerLCD::endTransmission()
       _spiPort->endTransaction(); // let go of the SPI bus
     } // if _spiSettings
 #endif
-    delay(10); // wait a bit for display to disable
+    if (!_noDelay)
+      delay(10); // wait a bit for display to disable
   } // if-else
 } // beginTransmission
 
@@ -255,7 +263,8 @@ void SerLCD::init()
   transmit(SETTING_COMMAND);                      // Put LCD into setting mode
   transmit(CLEAR_COMMAND);                        // Send clear display command
   endTransmission();                              // Stop transmission
-  delay(50);                                      // let things settle a bit
+  if (!_noDelay)
+    delay(50); // let things settle a bit
 } // init
 
 /*
@@ -271,7 +280,8 @@ void SerLCD::command(byte command)
   transmit(command);         // Send the command code
   endTransmission();         // Stop transmission
 
-  delay(10); // Hang out for a bit
+  if (!_noDelay)
+    delay(10); // Hang out for a bit
 }
 
 /*
@@ -286,7 +296,8 @@ void SerLCD::specialCommand(byte command)
   transmit(command);         // Send the command code
   endTransmission();         // Stop transmission
 
-  delay(50); // Wait a bit longer for special display commands
+  if (!_noDelay)
+    delay(50); // Wait a bit longer for special display commands
 }
 
 /*
@@ -307,7 +318,8 @@ void SerLCD::specialCommand(byte command, byte count)
   } // for
   endTransmission(); // Stop transmission
 
-  delay(50); // Wait a bit longer for special display commands
+  if (!_noDelay)
+    delay(50); // Wait a bit longer for special display commands
 }
 
 /*
@@ -318,7 +330,8 @@ void SerLCD::specialCommand(byte command, byte count)
 void SerLCD::clear()
 {
   command(CLEAR_COMMAND);
-  delay(10); // a little extra delay after clear
+  if (!_noDelay)
+    delay(10); // a little extra delay after clear
 }
 
 /*
@@ -366,7 +379,8 @@ void SerLCD::createChar(byte location, byte charmap[])
     transmit(charmap[i]);
   } // for
   endTransmission();
-  delay(50); // This takes a bit longer
+  if (!_noDelay)
+    delay(50); // This takes a bit longer
 }
 
 /*
@@ -390,7 +404,8 @@ size_t SerLCD::write(uint8_t b)
   beginTransmission(); // transmit to device
   transmit(b);
   endTransmission(); // Stop transmission
-  delay(10);         // wait a bit
+  if (!_noDelay)
+    delay(10); // wait a bit
   return 1;
 } // write
 
@@ -408,7 +423,8 @@ size_t SerLCD::write(const uint8_t *buffer, size_t size)
     n++;
   } // while
   endTransmission(); // Stop transmission
-  delay(10);         //
+  if (!_noDelay)
+    delay(10); //
   return n;
 } // write
 
@@ -605,7 +621,8 @@ void SerLCD::setBacklight(byte r, byte g, byte b)
   transmit(SPECIAL_COMMAND);                      // Send special command character
   transmit(LCD_DISPLAYCONTROL | _displayControl); // Turn display on as before
   endTransmission();                              // Stop transmission
-  delay(50);                                      // This one is a bit slow
+  if (!_noDelay)
+    delay(50); // This one is a bit slow
 } // setBacklight
 
 // New backlight function
@@ -630,7 +647,8 @@ void SerLCD::setFastBacklight(byte r, byte g, byte b)
   transmit(g);               // Send the green value
   transmit(b);               // Send the blue value
   endTransmission();         // Stop transmission
-  delay(10);
+  if (!_noDelay)
+    delay(10);
 } // setFastBacklight
 
 // Enable system messages
@@ -641,7 +659,8 @@ void SerLCD::enableSystemMessages()
   transmit(SETTING_COMMAND);               // Send special command character
   transmit(ENABLE_SYSTEM_MESSAGE_DISPLAY); // Send the set '.' character
   endTransmission();                       // Stop transmission
-  delay(10);
+  if (!_noDelay)
+    delay(10);
 }
 
 // Disable system messages
@@ -652,7 +671,8 @@ void SerLCD::disableSystemMessages()
   transmit(SETTING_COMMAND);                // Send special command character
   transmit(DISABLE_SYSTEM_MESSAGE_DISPLAY); // Send the set '.' character
   endTransmission();                        // Stop transmission
-  delay(10);
+  if (!_noDelay)
+    delay(10);
 }
 
 // Enable splash screen at power on
@@ -662,7 +682,8 @@ void SerLCD::enableSplash()
   transmit(SETTING_COMMAND);       // Send special command character
   transmit(ENABLE_SPLASH_DISPLAY); // Send the set '.' character
   endTransmission();               // Stop transmission
-  delay(10);
+  if (!_noDelay)
+    delay(10);
 }
 
 // Disable splash screen at power on
@@ -672,7 +693,8 @@ void SerLCD::disableSplash()
   transmit(SETTING_COMMAND);        // Send special command character
   transmit(DISABLE_SPLASH_DISPLAY); // Send the set '.' character
   endTransmission();                // Stop transmission
-  delay(10);
+  if (!_noDelay)
+    delay(10);
 }
 
 // Save the current display as the splash
@@ -684,7 +706,8 @@ void SerLCD::saveSplash()
   transmit(SETTING_COMMAND);                // Send special command character
   transmit(SAVE_CURRENT_DISPLAY_AS_SPLASH); // Send the set Ctrl+j character
   endTransmission();                        // Stop transmission
-  delay(10);
+  if (!_noDelay)
+    delay(10);
 }
 
 /*
@@ -739,7 +762,8 @@ void SerLCD::setContrast(byte new_val)
   transmit(new_val);          // Send new contrast value
   endTransmission();          // Stop transmission
 
-  delay(10); // Wait a little bit
+  if (!_noDelay)
+    delay(10); // Wait a little bit
 } // setContrast
 
 /*
@@ -762,7 +786,8 @@ void SerLCD::setAddress(byte new_addr)
   // Update our own address so we can still talk to the display
   _i2cAddr = new_addr;
 
-  delay(50); // This may take awhile
+  if (!_noDelay)
+    delay(50); // This may take awhile
 } // setAddress
 
 /*
